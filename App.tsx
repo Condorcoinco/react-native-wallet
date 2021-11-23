@@ -20,9 +20,14 @@ import { Keypair } from '@solana/web3.js';
 
 export default function App() {
   var [tokenBalance, tokenBalanceState] = useState(0)
+  var [balanceSol, balanceSolState] = useState(0)
 
   async function obtenerBalance() {
-    console.log(getBalance(new web3.PublicKey("uja3w9XG1g6DQSVT6YASK99FVmdVwXoHVoQEgtEJdLv")));
+    const balanceUserSol = getBalance(new web3.PublicKey("uja3w9XG1g6DQSVT6YASK99FVmdVwXoHVoQEgtEJdLv"))
+    balanceUserSol.then((value) => {
+      balanceSol = value
+      balanceSolState(value)
+    })
   }
 
   async function obtenerPrecioSo() {
@@ -33,15 +38,20 @@ export default function App() {
     });
   }
 
-  async function enviarTransfer() {
-    await tokenTransaction("uja3w9XG1g6DQSVT6YASK99FVmdVwXoHVoQEgtEJdLv", 1)
+  async function enviarTransfer(wallet: string, amount: number) {
+    await tokenTransaction(wallet, amount)
   }
 
   obtenerBalance()
-  //enviarTransfer()
+  obtenerPrecioSo()
 
   return (
+
+
     <View style={styles.container}>
+
+      <Text>PACH: {tokenBalance}</Text>
+      <Text>SOL: {balanceSol}</Text>
       <TextInput
         style={styles.input}
         placeholder="Cuenta Recipiente"
@@ -51,16 +61,10 @@ export default function App() {
         placeholder="Cantidad"
       />
       <Button
-        onPress={enviarTransfer}
+        onPress={() => enviarTransfer("uja3w9XG1g6DQSVT6YASK99FVmdVwXoHVoQEgtEJdLv", 1)}
         title="Enviar Tranferencia"
         color="#841584"
       />
-      <Button
-        onPress={obtenerPrecioSo}
-        title="Obtener balance"
-        color="#841584"
-      />
-      <Text>${tokenBalance}</Text>
       <StatusBar style="auto" />
     </View>
   );
