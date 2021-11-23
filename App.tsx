@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useCallback, useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, View, SafeAreaView } from 'react-native';
 const web3 = require("@solana/web3.js")
+import NumericInput from 'react-native-numeric-input'
 
 import { useStoreState } from "./hooks/storeHooks";
 import { accountFromSeed, maskedAddress } from "./utils";
@@ -19,6 +20,8 @@ import { Keypair } from '@solana/web3.js';
 
 
 export default function App() {
+  var [text, setText] = useState('');
+  var [numberto, setNumber] = useState(0)
   var [tokenBalance, tokenBalanceState] = useState(0)
   var [balanceSol, balanceSolState] = useState(0)
 
@@ -48,25 +51,24 @@ export default function App() {
   return (
 
 
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
 
       <Text>PACH: {tokenBalance}</Text>
       <Text>SOL: {balanceSol}</Text>
       <TextInput
         style={styles.input}
         placeholder="Cuenta Recipiente"
+        value={text}
+        onChangeText={text => setText(text)}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Cantidad"
-      />
+      <NumericInput type='up-down' onChange={numberto => setNumber(numberto)} />
       <Button
-        onPress={() => enviarTransfer("uja3w9XG1g6DQSVT6YASK99FVmdVwXoHVoQEgtEJdLv", 1)}
+        onPress={() => enviarTransfer(text, numberto)}
         title="Enviar Tranferencia"
         color="#841584"
       />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
